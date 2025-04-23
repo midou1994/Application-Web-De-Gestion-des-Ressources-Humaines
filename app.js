@@ -14,6 +14,7 @@ var usersRouter = require("./routes/usersRouter");
 var employeRouter = require("./routes/employeRouter");
 var demandecongeRouter = require("./routes/demandecongeRouter");
 var congeRouter = require("./routes/congeRouter");
+var jourferieRouter = require("./routes/jourferieRouter");
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use("/users", usersRouter);
 app.use("/employe", employeRouter);
 app.use("/demandeconge", demandecongeRouter);
 app.use("/conge", congeRouter);
+app.use("/jourferie", jourferieRouter);
 
 
 // catch 404 and forward to error handler

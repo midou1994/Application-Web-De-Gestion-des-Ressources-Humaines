@@ -64,7 +64,7 @@ module.exports.addAdmin = async (req,res)=>{
 }
 module.exports.deletusersBYID = async (req,res)=>{
     try {
-        const {id} = req.param
+        const {id} = req.params
         console.log(id)
         await userModel.findByIdAndDelete(id)
 
