@@ -13,7 +13,7 @@ module.exports.getAllUsers = async (req,res)=>{
 module.exports.addEmploye = async (req,res)=>{
     try {
         
-        const {nom, prenom,email,password,age}=req.body
+        const {nom, prenom,email,password}=req.body
 
         const role = "Employe"
 
@@ -32,7 +32,7 @@ module.exports.addResponsableRH = async (req,res)=>{
     try {
         
         const {nom, prenom,email,password}=req.body
-        const role="responsable RH"
+        const role="ResponsableRH"
     
         const newUser = new userModel({
             nom, prenom,email,password,role
