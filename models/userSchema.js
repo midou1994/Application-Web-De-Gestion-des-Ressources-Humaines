@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     role: {type : String, enum : ['Admin','ResponsableRH','Employe']},
 
     isActive : Boolean,
+    connecte : Boolean,
     
 },{timestamps:true});
 userSchema.pre("save",async function(next){
@@ -15,11 +16,26 @@ userSchema.pre("save",async function(next){
         const salt = await bcrypt.genSalt()
         const User = this
         User.password = await bcrypt.hash(User.password,salt)
-        isActive = false
+        User.isActive = false
         next()
     } catch (error) {
         next(error)
     }
 })
-const User = mongoose.model("User", userSchema);
+userSchema.statics.login = async function(email,password){
+    const user = await this.findOne({email})
+    if (user) {
+        const auth = await bcrypt.compare(password,user.password)
+        if (auth) {
+            if(!user.isActive) {
+                return user
+            }
+            throw Error("compte non activé")
+            return user
+        }
+        throw Error("incorrect password")
+    }
+    throw Error("incorrect email")
+}
+const User = mongoose.model("user", userSchema);
 module.exports = User;
