@@ -10,7 +10,7 @@ const {requireAuthUser} = require("../middlewares/authMiddleware")
 router.get('/getAllUsers',requireAuthUser,usercontroller.getAllUsers );
 router.post('/addEmploye',usercontroller.addEmploye );
 router.post('/login',usercontroller.login );
-router.post('/logout/',requireAuthUser,usercontroller.logout );
+router.post('/logout',requireAuthUser,usercontroller.logout );
 router.post('/addAdmin',usercontroller.addAdmin );
 router.post('/addResponsableRH',usercontroller.addResponsableRH );
 router.delete('/deletusersBYID/:id',usercontroller.deletusersBYID );

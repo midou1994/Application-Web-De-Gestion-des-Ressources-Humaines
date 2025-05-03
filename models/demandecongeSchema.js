@@ -5,6 +5,7 @@ const demandecongeSchema = new mongoose.Schema({
   date_fin: Date,
   nombre_jrs: String,
   type_conge: { type: String, enum: ["annuel", "maladie", "exceptionnel", "maternité"]}, 
+  etat_conge: { type: String, default: "en attente" },
   matricule: { type: String, required: true, unique: true },
 }, { timestamps: true });
   

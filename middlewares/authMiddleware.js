@@ -16,6 +16,7 @@ const requireAuthUser = (req, res, next) => {
         res.json("/Problem_token");
       } else {
         req.user = await userModel.findById(decodedToken.id);
+        console.log("user", req.user); //user { _id: new ObjectId("648899b4d5b8033e1cc513b3"), nom: 'admin', prenom: 'admin', email: '
         next();
       }
     });

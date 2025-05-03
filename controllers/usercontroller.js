@@ -141,12 +141,13 @@ module.exports.login = async (req,res)=>{
 }
 module.exports.logout = async (req,res)=>{
     try {
-        const id = req.user_id 
-        
+        const id = req.user._id 
+        console.log(id)
         const connecte = false
-        await userModel.findByIdAndUpdate(id,{
+        const user = await userModel.findByIdAndUpdate(id,{
             $set: {connecte}
         })
+        console.log(user)
         res.cookie("jwt_token","",{httpOnly:true,maxAge:1})
         
         res.status(200).json("disconnect success")
