@@ -15,9 +15,9 @@ module.exports.getAllUsers = async (req,res)=>{
 module.exports.addEmploye = async (req,res)=>{
     try {
         
-        const {nom, prenom,email,password}=req.body
+        const {nom, prenom,email,password,role}=req.body
 
-        const role = "Employe"
+        
 
         const newUser = new userModel({
             nom, prenom,email,password,role
@@ -33,8 +33,8 @@ module.exports.addEmploye = async (req,res)=>{
 module.exports.addResponsableRH = async (req,res)=>{
     try {
         
-        const {nom, prenom,email,password}=req.body
-        const role="ResponsableRH"
+        const {nom, prenom,email,password,role}=req.body
+        
     
         const newUser = new userModel({
             nom, prenom,email,password,role
