@@ -62,3 +62,28 @@ module.exports.updateEmployesBYID = async (req,res)=>{
         res.status(500).json(error.message)
     }
 }
+module.exports.addEmployeWithImage = async (req, res) => {
+  try {
+    const employeData = {
+      ...req.body,
+    };
+
+    if (req.file) {
+      const { filename } = req.file;
+      console.log('Fichier reçu :', filename);
+      employemployeData.photo = filename; 
+    }
+
+    const employe = new Employe(employeData);
+    const addedEmploye = await employe.save();
+  
+      res.status(200).json({ addedEmploye });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  const jwt = require("jsonwebtoken")
+
+  const createToken=(id) => {
+    return jwt.sign({id},'net 9antra25 secret',{expiresIn : '1m'})
+  }

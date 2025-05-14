@@ -1,31 +1,43 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-const http = require("http")
+// Core Modules
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require("cors");
+const http = require("http");
 require("dotenv").config();
-const { connectToMongodb } = require("./db/db")
+const { connectToMongodb } = require("./db/db");
 
+// Routes
+const indexRouter = require('./routes/index');
+const usersRouter = require("./routes/usersRouter");
+const employeRouter = require("./routes/employeRouter");
+const demandecongeRouter = require("./routes/demandecongeRouter");
+const congeRouter = require("./routes/congeRouter");
+const jourferieRouter = require("./routes/jourferieRouter");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require("./routes/usersRouter");
-var employeRouter = require("./routes/employeRouter");
-var demandecongeRouter = require("./routes/demandecongeRouter");
-var congeRouter = require("./routes/congeRouter");
-var jourferieRouter = require("./routes/jourferieRouter");
+const app = express();
 
-var app = express();
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 
+app.options('*', cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 
-
+// Middleware
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// Routes
 app.use('/', indexRouter);
 app.use("/users", usersRouter);
 app.use("/employe", employeRouter);
@@ -34,32 +46,21 @@ app.use("/conge", congeRouter);
 app.use("/jourferie", jourferieRouter);
 
 
-// catch 404 and forward to error handler
+
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
-// error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.json('error');
+  res.status(err.status || 500).json({ error: err.message });
 });
 
 const server = http.createServer(app);
-server.listen(process.env.port, () => {
-   connectToMongodb(), 
-   console.log("app is running on port 5000") 
-  });
+server.listen(process.env.port || 5000, () => {
+  connectToMongodb();
+  console.log("✅ App is running on port", process.env.port || 5000);
+});
 
-
-
-
-
-
-
-
+module.exports = app;

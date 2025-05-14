@@ -1,7 +1,7 @@
 const jourferieModel = require('../models/jourferieSchema')
 module.exports.getAllJourferie = async (req, res) => {
     try {
-        const jourferieList = await jourferieModelModel.find();
+        const jourferieList = await jourferieModel.find();
         res.status(200).json(jourferieList);
     } catch (error) {
         res.status(500).json({ message: error.message });

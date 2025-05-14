@@ -7,22 +7,40 @@ module.exports.getAllDemandescoge = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-module.exports.addDemandesconge = async (req,res)=>{
+module.exports.addDemandesconge = async (req, res) => {
     try {
+        const { date_debut, date_fin, type_conge, employe } = req.body;
         
-        const { date_debut,date_fin,nombre_jrs,type_conge,etat_conge,matricule } = req.body;
+        // Validation des dates
+        const startDate = new Date(date_debut);
+        const endDate = new Date(date_fin);
+        if (startDate >= endDate) {
+            return res.status(400).json({ message: "La date de fin doit être après la date de début" });
+        }
 
-        const newDemandeConge = new demandecongeModel({
-            date_debut,date_fin,nombre_jrs,type_conge,etat_conge,matricule
-        })
+        // Calcul du nombre de jours
+        const timeDiff = endDate.getTime() - startDate.getTime();
+        const nombre_jrs = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
 
-        const demandecongeadded = await newDemandeConge.save()
+        const newDemande = new demandecongeModel({
+            date_debut: startDate,
+            date_fin: endDate,
+            nombre_jrs,
+            type_conge,
+            employe,
+            etat_conge: "En attente"
+        });
 
-        res.status(200).json(demandecongeadded)
+        const savedDemande = await newDemande.save();
+        res.status(201).json(savedDemande);
+
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(500).json({ 
+            message: "Erreur serveur",
+            error: error.message 
+        });
     }
-}
+};
 module.exports.deletDemandescongeBYID = async (req,res)=>{
     try {
         const {id} = req.params
@@ -60,3 +78,17 @@ module.exports.updateDemandecongeBYID = async (req,res)=>{
         res.status(500).json(error.message)
     }
 } 
+module.exports.updateStatutById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { etat_conge } = req.body;
+
+        const updated = await demandecongeModel.findByIdAndUpdate(id, {
+            etat_conge
+        }, { new: true });
+
+        res.status(200).json(updated);
+    } catch (err) {
+        res.status(500).json({ message: "Erreur serveur", error: err.message });
+    }
+};
