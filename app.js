@@ -26,8 +26,10 @@ app.use(cors({
 
 app.options('*', cors({
   origin: "http://localhost:3000",
+  
   credentials: true
 }));
+
 
 // Middleware
 app.use(logger('dev'));

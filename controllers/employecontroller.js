@@ -1,9 +1,9 @@
-const employeModel = require('../models/employeSchema')
+const Employe = require('../models/employeSchema')
 
 
 module.exports.getAllEmployes = async (req, res) => {
     try {
-        const employeList = await employeModel.find();
+        const employeList = await Employe.find();
         res.status(200).json(employeList);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -14,7 +14,7 @@ module.exports.addEmployes = async (req,res)=>{
         
         const { matricule, nom, prenom, cin, date_naissance, adresse, telephone, post, photo } = req.body;
 
-        const newEmploye = new employeModel({
+        const newEmploye = new Employe({
             matricule, nom, prenom, cin, date_naissance, adresse, telephone, post, photo 
         })
 
@@ -29,33 +29,32 @@ module.exports.deletEmployesBYID = async (req,res)=>{
     try {
         const {id} = req.params
         console.log(id)
-        await employeModel.findByIdAndDelete(id)
+        await Employe.findByIdAndDelete(id)
 
         res.status(200).json("deleted")
     } catch (error) {
         res.status(500).json(error.message)
     }
 } 
-module.exports.getEmployesBYID = async (req,res)=>{
+exports.getEmployesBYID = async (req, res) => {
     try {
-        const {id} = req.params
-        const employe = await employeModel.findById(id)
-
-        res.status(200).json(employe)
+        const employe = await Employe.findById(req.params.id);
+        if (!employe) return res.status(404).json({ message: 'Employé non trouvé' });
+        res.status(200).json(employe);
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(500).json({ message: error.message });
     }
-} 
+};
 module.exports.updateEmployesBYID = async (req,res)=>{
     try {
         const {id}=req.params
         const {nom, prenom, adresse, telephone,post, photo}=req.body
         
-        await employeModel.findByIdAndUpdate(id,{
+        await Employe.findByIdAndUpdate(id,{
             $set: {nom, prenom, adresse, telephone,post, photo}
         })
 
-        const employe = await employeModel.findById(id)
+        const employe = await Employe.findById(id)
 
         res.status(200).json(employe)
     } catch (error) {
@@ -71,7 +70,7 @@ module.exports.addEmployeWithImage = async (req, res) => {
     if (req.file) {
       const { filename } = req.file;
       console.log('Fichier reçu :', filename);
-      employemployeData.photo = filename; 
+      employeData.photo = filename; 
     }
 
     const employe = new Employe(employeData);
@@ -87,3 +86,27 @@ module.exports.addEmployeWithImage = async (req, res) => {
   const createToken=(id) => {
     return jwt.sign({id},'net 9antra25 secret',{expiresIn : '1m'})
   }
+  module.exports.updateEmployeWithImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body };
+
+    if (req.file) {
+      updateData.photo = req.file.filename;
+    }
+
+    const updatedEmploye = await Employe.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!updatedEmploye) {
+      return res.status(404).json({ message: "Employé introuvable" });
+    }
+
+    res.status(200).json(updatedEmploye);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
