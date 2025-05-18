@@ -16,6 +16,10 @@ const employeRouter = require("./routes/employeRouter");
 const demandecongeRouter = require("./routes/demandecongeRouter");
 const congeRouter = require("./routes/congeRouter");
 const jourferieRouter = require("./routes/jourferieRouter");
+const candidatRouter = require("./routes/candidatRouter");
+const ficheentretientRouter = require("./routes/ficheentretientRouter");
+const rendezvousRouter = require("./routes/rendezvousRouter");
+
 
 const app = express();
 
@@ -46,6 +50,9 @@ app.use("/employe", employeRouter);
 app.use("/demandeconge", demandecongeRouter);
 app.use("/conge", congeRouter);
 app.use("/jourferie", jourferieRouter);
+app.use("/candidat", candidatRouter);
+app.use("/ficheentretient", ficheentretientRouter);
+app.use("/rendezvous", rendezvousRouter);
 
 
 
