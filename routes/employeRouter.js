@@ -11,6 +11,7 @@ router.put('/updateEmployesBYID/:id', employeController.updateEmployesBYID);
 router.post('/addEmployeWithImage', uploadfile.single('photo'), employeController.addEmployeWithImage);
 router.put('/updateEmployeWithImage/:id', uploadfile.single('photo'), employeController.updateEmployeWithImage);
 
+router.get('/byUser/:userId', employeController.getEmployeByUserId);
 
 
 

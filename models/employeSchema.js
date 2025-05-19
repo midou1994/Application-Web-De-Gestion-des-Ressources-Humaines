@@ -11,6 +11,7 @@ const employeSchema = new mongoose.Schema({
   post: String,
   photo: String, 
   
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
 }, { timestamps: true });
   
 

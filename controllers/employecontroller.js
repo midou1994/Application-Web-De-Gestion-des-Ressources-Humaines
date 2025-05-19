@@ -71,6 +71,9 @@ module.exports.addEmployeWithImage = async (req, res) => {
       const { filename } = req.file;
       console.log('Fichier reçu :', filename);
       employeData.photo = filename; 
+    } else {
+      file = "img.webp"
+      employeData.photo = file; 
     }
 
     const employe = new Employe(employeData);
@@ -106,6 +109,19 @@ module.exports.addEmployeWithImage = async (req, res) => {
     }
 
     res.status(200).json(updatedEmploye);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+  module.exports.getEmployeByUserId = async (req, res) => {
+  try {
+    const employe = await Employe.findOne({ user: req.params.userId });
+
+    if (!employe) {
+      return res.status(404).json({ message: "Aucun employé trouvé pour cet utilisateur" });
+    }
+
+    res.status(200).json(employe);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
