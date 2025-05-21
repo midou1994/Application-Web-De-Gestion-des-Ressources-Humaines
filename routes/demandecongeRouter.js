@@ -8,7 +8,6 @@ router.delete('/deletDemandescongeBYID/:id', demandecongecontroller.deletDemande
 router.get('/getDemandecongeBYID/:id', demandecongecontroller.getDemandecongeBYID);
 router.put('/updateDemandecongeBYID/:id', demandecongecontroller.updateDemandecongeBYID);
 router.put('/updatestatubyid/:id', demandecongecontroller.updateStatutById);
-
-
+router.get('/getDemandescogeByEmployee/:employeeId', demandecongecontroller.getDemandescogeByEmployee);
 
 module.exports = router;

@@ -48,10 +48,10 @@ exports.getEmployesBYID = async (req, res) => {
 module.exports.updateEmployesBYID = async (req,res)=>{
     try {
         const {id}=req.params
-        const {nom, prenom, adresse, telephone,post, photo}=req.body
+        const {nom, prenom, adresse, telephone,post, photo, isActive}=req.body
         
         await Employe.findByIdAndUpdate(id,{
-            $set: {nom, prenom, adresse, telephone,post, photo}
+            $set: {nom, prenom, adresse, telephone,post, photo, isActive}
         })
 
         const employe = await Employe.findById(id)

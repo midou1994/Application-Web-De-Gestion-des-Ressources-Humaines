@@ -18,6 +18,10 @@ const congeSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employe',
         required: true 
+    },
+    isActive: {
+        type: Boolean,
+        default: false
     }
 });
 const conge = mongoose.model("conge", congeSchema);

@@ -44,19 +44,18 @@ module.exports.getJourferieBYID = async (req,res)=>{
         res.status(500).json(error.message)
     }
 } 
-module.exports.updateJourferieBYID = async (req,res)=>{
+module.exports.updateJourferieBYID = async (req, res) => {
     try {
-        const {id}=req.params
-        const {}=req.body
+        const { id } = req.params;
+        const { libelle, date, jour, nombre_de_jours, annee } = req.body;
         
-        await jourferieModel.findByIdAndUpdate(id,{
-            $set: {libelle,date,jour,nombre_de_jours,annee}
-        })
+        await jourferieModel.findByIdAndUpdate(id, {
+            $set: { libelle, date, jour, nombre_de_jours, annee }
+        });
 
-        const jourferie = await jourferieModel.findById(id)
-
-        res.status(200).json(jourferie)
+        const jourferie = await jourferieModel.findById(id);
+        res.status(200).json(jourferie);
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(500).json(error.message);
     }
-}
+};

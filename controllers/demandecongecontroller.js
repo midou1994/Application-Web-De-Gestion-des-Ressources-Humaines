@@ -92,3 +92,13 @@ module.exports.updateStatutById = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur", error: err.message });
     }
 };
+
+module.exports.getDemandescogeByEmployee = async (req, res) => {
+    try {
+        const { employeeId } = req.params;
+        const demandes = await demandecongeModel.find({ employe: employeeId });
+        res.status(200).json(demandes);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};

@@ -102,22 +102,32 @@ module.exports.updatePassword = async (req,res)=>{
         res.status(500).json(error.message)
     }
 }
-module.exports.updateUser = async (req,res)=>{
+module.exports.updateUser = async (req, res) => {
     try {
-        const {id}=req.params
-        const {nom,prenom}=req.body
+        const { id } = req.params;
+        const { nom, prenom, email, role, isActive } = req.body;
         
-        await userModel.findByIdAndUpdate(id,{
-            $set: {nom,prenom}
-        })
+        await userModel.findByIdAndUpdate(id, {
+            $set: {
+                nom,
+                prenom,
+                email,
+                role,
+                isActive: isActive !== undefined ? isActive : false
+            }
+        });
 
-        const user = await userModel.findById(id)
+        const user = await userModel.findById(id);
 
-        res.status(200).json(user)
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+
+        res.status(200).json(user);
     } catch (error) {
-        res.status(500).json(error.message)
+        res.status(500).json(error.message);
     }
-}
+};
 
 const createToken = (id) => {
   return jwt.sign({ id }, "jwt token SECRET", { expiresIn: "1m" }); // tu peux changer la durée ici
