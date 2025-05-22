@@ -10,10 +10,10 @@ module.exports.getAllFicheEntretient = async (req, res) => {
 }
 module.exports.addFicheEntretient = async (req, res) => {
     try {
-        const {  recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur, decicsion } = req.body;
+        const {  recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur,note, decicsion } = req.body;
 
         const newFicheEntretient = new FicheEntretient({
-              recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur, decicsion
+              recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur,note, decicsion
         });
 
         const ficheentretientadded = await newFicheEntretient.save()
@@ -47,10 +47,10 @@ module.exports.getFicheEntretientBYID = async (req, res) => {
 module.exports.updateFicheEntretientBYID = async (req, res) => {
     try {
         const { id } = req.params
-        const { date_entretient, lieu, recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur, decicsion } = req.body
+        const { date_entretient, lieu, recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur,note, decicsion } = req.body
 
         await FicheEntretient.findByIdAndUpdate(id, {
-            $set: { date_entretient, lieu, recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur, decicsion }
+            $set: { date_entretient, lieu, recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur,note, decicsion }
         })
 
         const ficheentretient = await FicheEntretient.findById(id)

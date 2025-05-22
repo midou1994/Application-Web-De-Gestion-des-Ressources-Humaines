@@ -16,8 +16,8 @@ const candidatSchema = new mongoose.Schema({
     lettre_motivation: String,
     diplome: String,
     annee_obtention: String,
-    email: { type: String, required: true, unique: true },
     
+   
 
 }, { timestamps: true });
 

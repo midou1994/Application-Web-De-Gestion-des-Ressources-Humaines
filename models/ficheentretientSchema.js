@@ -7,8 +7,14 @@ const ficheentretientSchema = new mongoose.Schema({
     motivation_evaluation: String,
     preparation_evaluation: String,
     commantaire_recruteur: String,
-    decision: { type: String, enum: ['Accepté', 'Rejeté', 'Réserve'], default: 'Réserve' },
+    note: { type: Number, min: 0, max: 20 },
 
+    decision: { type: String, enum: ['Accepté', 'Rejeté', 'Réserve'], default: 'Réserve' },
+    candidat: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Candidat", 
+        required: true 
+      }
 
 }, { timestamps: true });
 
