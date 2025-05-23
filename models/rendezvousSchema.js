@@ -16,7 +16,7 @@ const rendezvousSchema = new mongoose.Schema({
     },
     statut: { 
         type: String, 
-        enum: ['En attente', 'Confirmé', 'Annulé', 'Terminé'],
+        enum: ['En attente', 'Terminé'],
         default: 'En attente'
     },
     candidat: { 

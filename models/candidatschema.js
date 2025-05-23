@@ -1,10 +1,18 @@
 const mongoose = require("mongoose");
 
 const candidatSchema = new mongoose.Schema({
-    
+    matricule: { 
+        type: String, 
+        unique: true, 
+        sparse: true,
+        index: { 
+            unique: true, 
+            sparse: true 
+        }
+    },
     nom: String,
     prenom: String,
-    email: { type: String, required: true, unique: true, },
+    email: { type: String, required: true, unique: true },
     cin: { type: String, required: true, unique: true, match: [/^\d{8}$/, 'Le numéro CIN doit contenir exactement 8 chiffres'] },
     date_naissance: Date,
     adresse: String,
@@ -16,11 +24,16 @@ const candidatSchema = new mongoose.Schema({
     lettre_motivation: String,
     diplome: String,
     annee_obtention: String,
-    
-   
+}, { 
+    timestamps: true,
+    // Désactiver la validation automatique des index
+    autoIndex: false 
+});
 
-}, { timestamps: true });
-
-
+// Créer l'index manuellement après la définition du schéma
+candidatSchema.index({ matricule: 1 }, { 
+    unique: true, 
+    sparse: true 
+});
 
 module.exports = mongoose.model("Candidat", candidatSchema);

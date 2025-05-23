@@ -1,28 +1,102 @@
 const FicheEntretient = require('../models/ficheentretientSchema');
+const nodemailer = require('nodemailer');
+const Candidat = require('../models/candidatschema');
+
+// Configuration du transporteur d'email avec MailerSend
+const transporter = nodemailer.createTransport({
+    host: 'smtp.mailersend.net',
+    port: 587,
+    secure: false,
+    auth: {
+        user: 'MS_yeloaZ@test-yxj6lj9nkw74do2r.mlsender.net',
+        pass: 'mssp.GonLr1O.ynrw7gy0rmol2k8e.DuTGtHK'
+    }
+});
 
 module.exports.getAllFicheEntretient = async (req, res) => {
     try {
-        const ficheentretients = await FicheEntretient.find();
+        const ficheentretients = await FicheEntretient.find()
+            .populate('candidat', 'nom prenom email');
         res.status(200).json(ficheentretients);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 }
+
 module.exports.addFicheEntretient = async (req, res) => {
     try {
-        const {  recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur,note, decicsion } = req.body;
+        const { recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, 
+                preparation_evaluation, commantaire_recruteur, candidat, note, decision } = req.body;
+
+        // Validation des champs obligatoires
+        if (!candidat || !recruteur || !decision) {
+            return res.status(400).json({ 
+                message: "Le candidat, le recruteur et la décision sont obligatoires" 
+            });
+        }
 
         const newFicheEntretient = new FicheEntretient({
-              recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur,note, decicsion
+            recruteur,
+            technique_evaluation,
+            communication_evaluation,
+            motivation_evaluation,
+            preparation_evaluation,
+            commantaire_recruteur,
+            candidat,
+            note,
+            decision
         });
 
-        const ficheentretientadded = await newFicheEntretient.save()
+        const ficheentretientadded = await newFicheEntretient.save();
+        
+        // Récupérer les informations du candidat
+        const candidatInfo = await Candidat.findById(candidat);
+        if (!candidatInfo) {
+            return res.status(404).json({ message: "Candidat non trouvé" });
+        }
 
-        res.status(200).json(ficheentretientadded)
+        // Préparer le contenu de l'email
+        const mailOptions = {
+            from: 'MS_yeloaZ@test-yxj6lj9nkw74do2r.mlsender.net',
+            to: candidatInfo.email,
+            subject: 'Résultat de votre entretien',
+            html: `
+                <h2>Résultat de votre entretien</h2>
+                <p>Cher(e) ${candidatInfo.prenom} ${candidatInfo.nom},</p>
+                <p>Nous avons le plaisir de vous informer du résultat de votre entretien :</p>
+                <ul>
+                    <li><strong>Décision :</strong> ${decision}</li>
+                    ${note ? `<li><strong>Note :</strong> ${note}/20</li>` : ''}
+                </ul>
+                <h3>Détails de l'évaluation :</h3>
+                <ul>
+                    ${technique_evaluation ? `<li><strong>Évaluation technique :</strong> ${technique_evaluation}</li>` : ''}
+                    ${communication_evaluation ? `<li><strong>Évaluation communication :</strong> ${communication_evaluation}</li>` : ''}
+                    ${motivation_evaluation ? `<li><strong>Évaluation motivation :</strong> ${motivation_evaluation}</li>` : ''}
+                    ${preparation_evaluation ? `<li><strong>Évaluation préparation :</strong> ${preparation_evaluation}</li>` : ''}
+                </ul>
+                ${commantaire_recruteur ? `<p><strong>Commentaires du recruteur :</strong><br>${commantaire_recruteur}</p>` : ''}
+                <p>Nous vous remercions de votre intérêt pour notre entreprise.</p>
+                <p>Cordialement,<br>L'équipe RH</p>
+            `
+        };
+
+        // Envoyer l'email
+        await transporter.sendMail(mailOptions);
+
+        res.status(201).json({
+            message: "Fiche d'entretien créée et email envoyé avec succès",
+            fiche: ficheentretientadded
+        });
     } catch (error) {
-        res.status(500).json(error.message)
+        console.error("Erreur lors de l'ajout de la fiche d'entretien:", error);
+        res.status(500).json({ 
+            message: "Erreur serveur lors de l'ajout de la fiche d'entretien",
+            error: error.message 
+        });
     }
 }
+
 module.exports.deletFicheEntretientBYID = async (req, res) => {
     try {
         const { id } = req.params
@@ -34,6 +108,7 @@ module.exports.deletFicheEntretientBYID = async (req, res) => {
         res.status(500).json(error.message)
     }
 }
+
 module.exports.getFicheEntretientBYID = async (req, res) => {
     try {
         const { id } = req.params
@@ -44,6 +119,7 @@ module.exports.getFicheEntretientBYID = async (req, res) => {
         res.status(500).json(error.message)
     }
 }
+
 module.exports.updateFicheEntretientBYID = async (req, res) => {
     try {
         const { id } = req.params
