@@ -122,17 +122,55 @@ module.exports.getFicheEntretientBYID = async (req, res) => {
 
 module.exports.updateFicheEntretientBYID = async (req, res) => {
     try {
-        const { id } = req.params
-        const { date_entretient, lieu, recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur,note, decicsion } = req.body
+        const { id } = req.params;
+        const { 
+            recruteur, 
+            technique_evaluation, 
+            communication_evaluation, 
+            motivation_evaluation, 
+            preparation_evaluation, 
+            commantaire_recruteur,
+            note, 
+            decision 
+        } = req.body;
 
-        await FicheEntretient.findByIdAndUpdate(id, {
-            $set: { date_entretient, lieu, recruteur, technique_evaluation, communication_evaluation, motivation_evaluation, preparation_evaluation, commantaire_recruteur,note, decicsion }
-        })
+        // Validate required fields
+        if (!recruteur || !decision) {
+            return res.status(400).json({ 
+                message: "Le recruteur et la décision sont obligatoires" 
+            });
+        }
 
-        const ficheentretient = await FicheEntretient.findById(id)
+        // Check if the document exists
+        const existingFiche = await FicheEntretient.findById(id);
+        if (!existingFiche) {
+            return res.status(404).json({ message: "Fiche d'entretien non trouvée" });
+        }
 
-        res.status(200).json(ficheentretient)
+        // Update the document
+        const updatedFiche = await FicheEntretient.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    recruteur,
+                    technique_evaluation,
+                    communication_evaluation,
+                    motivation_evaluation,
+                    preparation_evaluation,
+                    commantaire_recruteur,
+                    note,
+                    decision
+                }
+            },
+            { new: true, runValidators: true }
+        ).populate('candidat', 'nom prenom email');
+
+        res.status(200).json(updatedFiche);
     } catch (error) {
-        res.status(500).json(error.message)
+        console.error("Erreur lors de la mise à jour de la fiche d'entretien:", error);
+        res.status(500).json({ 
+            message: "Erreur serveur lors de la mise à jour de la fiche d'entretien",
+            error: error.message 
+        });
     }
 }
