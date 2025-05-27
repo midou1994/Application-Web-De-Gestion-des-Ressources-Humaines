@@ -19,6 +19,7 @@ const jourferieRouter = require("./routes/jourferieRouter");
 const candidatRouter = require("./routes/candidatRouter");
 const ficheentretientRouter = require("./routes/ficheentretientRouter");
 const rendezvousRouter = require("./routes/rendezvousRouter");
+const carriereRouter = require("./routes/carriereRoutes");
 
 
 const app = express();
@@ -53,6 +54,7 @@ app.use("/jourferie", jourferieRouter);
 app.use("/candidat", candidatRouter);
 app.use("/ficheentretient", ficheentretientRouter);
 app.use("/rendezvous", rendezvousRouter);
+app.use("/carriere", carriereRouter);
 
 
 
